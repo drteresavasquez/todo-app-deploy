@@ -172,14 +172,15 @@ const search = () => {
 };
 
 const startApp = () => {
-  // const button =
-  //   '<button type="button" class="btn btn-success" id="start-btn">START APP</button>';
+  const button =
+    '<button type="button" class="btn btn-success" id="start-btn">START APP</button>';
 
-  // renderToDom("#app-form", button);
-  appOnDom();
-  search();
+  renderToDom("#app-form", button);
 
-  // document.querySelector("#start-btn").addEventListener("click", () => {});
+  document.querySelector("#start-btn").addEventListener("click", () => {
+    appOnDom();
+    search();
+  });
 };
 
 startApp();
