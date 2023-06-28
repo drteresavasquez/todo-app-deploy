@@ -2,27 +2,32 @@ const todos = [
   {
     id: 1,
     name: "Todo 1",
-    complete: false
+    complete: false,
+    category: "buster"
   },
   {
     id: 2,
     name: "Todo 2",
-    complete: true
+    complete: true,
+    category: "buster"
   },
   {
     id: 3,
     name: "Todo 3",
-    complete: false
+    complete: false,
+    category: "fuster"
   },
   {
     id: 4,
     name: "Todo 4",
-    complete: true
+    complete: true,
+    category: "luster"
   },
   {
     id: 5,
     name: "Todo 5",
-    complete: false
+    complete: false,
+    category: "duster"
   }
 ];
 
@@ -74,15 +79,23 @@ function card(todoObj) {
         </div>`;
 }
 
-const cardsOnDom = (filterType) => {
+const cardsOnDom = (array, filterType) => {
   let domString = "";
 
   if (filterType === "complete") {
-    for (let item of todos.filter((i) => i.complete)) {
+    for (let item of array.filter((i) => i.complete)) {
       domString += card(item);
     }
-  } else {
-    for (let item of todos.filter((i) => !i.complete)) {
+  }
+
+  if (filterType === "incomplete") {
+    for (let item of array.filter((i) => !i.complete)) {
+      domString += card(item);
+    }
+  }
+
+  if (!filterType) {
+    for (let item of array) {
       domString += card(item);
     }
   }
@@ -92,17 +105,17 @@ const cardsOnDom = (filterType) => {
 const appOnDom = () => {
   formOnDom();
   filterBtnsOnDom();
-  cardsOnDom();
+  cardsOnDom(todos, "incomplete");
   events();
 };
 
 const events = () => {
   document
     .querySelector("#incomplete")
-    .addEventListener("click", () => cardsOnDom("incomplete"));
+    .addEventListener("click", () => cardsOnDom(todos, "incomplete"));
   document
     .querySelector("#complete")
-    .addEventListener("click", () => cardsOnDom("complete"));
+    .addEventListener("click", () => cardsOnDom(todos, "complete"));
 
   document.querySelector("#app-form").addEventListener("submit", (event) => {
     event.preventDefault(); // ALWAYS GONNA USE THIS ON FORMS
@@ -119,7 +132,7 @@ const events = () => {
     // 3. push it to the array
     todos.push(newObject);
     // 4. repaint the DOM
-    cardsOnDom();
+    cardsOnDom(todos, "incomplete");
     // 5. reset the form
     document.querySelector("#app-form").reset();
   });
@@ -136,8 +149,25 @@ const events = () => {
       todos[index].complete = true;
 
       // rerender the DOM
-      cardsOnDom();
+      cardsOnDom(todos, "incomplete");
     }
+  });
+};
+
+const search = () => {
+  document.querySelector("#search").addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const value = document.querySelector("#search-input").value;
+
+    const searchResults = todos.filter(
+      (todo) =>
+        todo.name.toLowerCase().includes(value.toLowerCase()) ||
+        todo.category.toLowerCase().includes(value.toLowerCase())
+    );
+
+    cardsOnDom(searchResults);
+    document.querySelector("#search").reset();
   });
 };
 
@@ -147,6 +177,7 @@ const startApp = () => {
 
   // renderToDom("#app-form", button);
   appOnDom();
+  search();
 
   // document.querySelector("#start-btn").addEventListener("click", () => {});
 };
